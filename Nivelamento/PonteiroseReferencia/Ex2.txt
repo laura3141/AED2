@@ -1,0 +1,9 @@
+class Ponteiro01Array 
+{
+    public static void main (String[] args) {
+    int[] vet = new int [5];
+    escrever(vet);// escreve o primeiro endereço de memoria
+    vet = new int [5];//novos 5 inteiros
+    escrever(vet);
+    }
+}

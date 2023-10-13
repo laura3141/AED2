@@ -1,0 +1,14 @@
+class Ponteiro05PassagemObjeto {
+    public static Cliente setar2(Cliente y){
+        y.setCodigo(6); y.setNome(“ff”);
+        return y;
+    }
+    public static void setar1(Cliente x){
+        x.setCodigo(4); x.setNome(“dd”); x = new Cliente (5, “ee”);
+    }
+    public static void main (String[] args){
+        Cliente c1 = new Cliente(1, “aa”), c2 = null; c3 = new Cliente(2, “bb”);
+        c2 = c1;//c2 aponta para o mesmo lugar que c1
+        setar1(c1);// c1 e c2 possuem 4 e dd
+        c3 = setar2(c2);// c1 c2 e c3 possuem 6 e ff
+} }

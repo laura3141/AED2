@@ -1,0 +1,13 @@
+class Ponteiro02PassagemTipoPrimitivo {
+    public static void passagemDeTipoPrimitivo(int a){
+        escrever(“a: ” + a);//escreve 5
+        a = 10;// atribui a variavel local 10
+        escrever(“a: ” + a);//10
+    }
+    public static void main(String[] args) {
+        int x = 5;
+        escrever(“x: ” + x);//x=5
+        passagemDeTipoPrimitivo(x);
+        escrever(“x: ” + x);//5
+    }
+}

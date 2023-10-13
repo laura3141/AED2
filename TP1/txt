@@ -1,0 +1,180 @@
+
+import java.util.Scanner;
+
+public class Booleana {
+    static int ab,f;
+    static  String resultado;
+    static void or(int pos){
+        String aux="";
+        for(int i=pos;i<resultado.length();i++){
+            if(resultado.charAt(i)!=')'){
+                aux=aux+resultado.charAt(i);
+            }
+            else i=resultado.length();
+        }
+        aux=aux+')';
+       int um=0;
+        for(int i=0;i<aux.length();i++){
+            if(aux.charAt(i)=='1'){
+                resultado=resultado.replace(aux, "1");
+                i=aux.length();
+            }
+            else if (aux.charAt(i)=='0'){
+                for(int j=i;j<aux.length();j++){
+                    if(aux.charAt(j)=='1')um++;
+                    i=aux.length();
+                }
+               if(um>0)resultado=resultado.replace(aux, "1");
+               else resultado=resultado.replace(aux, "0");
+                
+            }
+        } 
+        
+    }
+     static void and(int pos){
+        int z=0;
+        String aux="";
+        for(int i=pos;i<resultado.length();i++){
+            if(resultado.charAt(i)!=')'){
+                aux=aux+resultado.charAt(i);
+            }
+            else i=resultado.length();
+        }
+        aux=aux+')';
+        for(int i=0;i<aux.length();i++){
+            if(aux.charAt(i)=='0'){
+                resultado=resultado.replace(aux, "0");
+                i=aux.length();
+            }
+            else if (aux.charAt(i)=='1'){
+                for(int j=i;j<aux.length();j++){
+                    if(aux.charAt(j)=='0'){
+                        z++;
+                        j=aux.length();
+                }   }
+               if(z>0)resultado=resultado.replace(aux, "0");
+               else resultado=resultado.replace(aux, "1");
+                
+            }
+        } 
+    }
+         
+   static void not(int pos){
+    String aux="";
+        for(int i=pos;i<resultado.length();i++){
+            if(resultado.charAt(i)!=')'){
+                aux=aux+resultado.charAt(i);
+            }
+            else i=resultado.length();
+        }
+        aux=aux+')';
+
+        for(int i=0;i<aux.length();i++){
+            if(aux.charAt(i)=='0'){
+                resultado=resultado.replace(aux, "1");
+            }
+            else if (aux.charAt(i)=='1'){
+               resultado=resultado.replace(aux, "0");
+                
+            }
+        } 
+        
+    }
+            
+    static void contaparenteses(){
+        ab=0;
+        for(int i=0;i<resultado.length();i++){
+            if(resultado.charAt(i)=='('){
+                ab++;
+            }
+            
+        }
+        System.out.println("ab  "+ab);
+    }
+
+    public static void main(String[] args) {
+        int n,a,b,c=0;
+        String exp;
+        do
+        {   
+
+            exp=MyIO.readLine();
+            Scanner scanner = new Scanner(exp);
+            if(!exp.equals("0")){
+                n = scanner.nextInt();
+                a= scanner.nextInt();
+                b= scanner.nextInt();
+                String expMenor="";
+                if(n==3){
+                    c= scanner.nextInt();
+                }
+                if(n==2){
+                    for(int i=6;i<exp.length();i++){
+                        expMenor=expMenor+exp.charAt(i);
+                    }
+                }
+                if(n==3){
+                    for(int i=8;i<exp.length();i++){
+                        expMenor=expMenor+exp.charAt(i);
+                    }
+                }
+            
+                resultado = expMenor.replace("A", String.valueOf(a))
+                .replace("B", String.valueOf(b))
+                .replace("and", ("&"))
+                .replace("or", ("|"))
+                .replace("not", ("!"))
+                .replace("C", String.valueOf(c));
+                System.out.println("resultado: "+ resultado);
+                contaparenteses();
+                
+                while(ab!=0){
+                    String op="";
+                   
+                        int posi=0;
+                        for(int i=resultado.length()-1;i>=0;i--){
+                            if(resultado.charAt(i)=='!'||resultado.charAt(i)=='&'||resultado.charAt(i)=='|'){
+                                posi=i;
+                                op=op+resultado.charAt(i);
+                                i=0;
+                            }
+                        }
+                        contaparenteses();
+                        if(op.charAt(0)=='&'){
+                            System.out.println("AND: " + op);
+                            System.out.println("Posi enviada and"+posi);
+                            and(posi);
+                            
+                            System.out.println("resul AND "+resultado);
+                            contaparenteses();
+                        }
+                        else if(op.charAt(0)=='!')
+
+                        {   System.out.println("NOT: " + op);
+                            System.out.println("Posi ENVIADA NOT"+posi);
+                            not(posi);
+                            
+                            
+                            contaparenteses();
+                            System.out.println("resul not "+resultado);
+                        }
+                        else if(op.charAt(0)=='|'){
+                            System.out.println("OR: " + op);
+                            System.out.println("Posi enviada or"+posi);
+                            or(posi);
+                            
+                            contaparenteses();
+                            System.out.println("resul  or"+resultado);
+
+                        }
+                        
+                    }
+                   
+            
+            scanner.close();  
+        }
+     
+    
+       }while(!exp.equals("0"));
+    }
+}

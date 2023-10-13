@@ -1,0 +1,7 @@
+int [ ] vet // criaçao de um vetor de nome vet
+= new int [5] // aloca 5 inteiros
+int [ ] vet = new int [5];// vet aponta para o primeiro endereco de memoria
+
+Cliente c;// ponteiro c
+= new Cliente ();//cria um cliente 
+Cliente c = new Cliente ();//entrega o endereço para c

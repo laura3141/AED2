@@ -1,0 +1,22 @@
+class Ponteiro03PassagemArray {
+
+    public static void passagemDeArray(int[ ] b){
+        for (int i = 0; i < 5; i++){
+            b[i] *= 5; escrever(“b[” + i + “]: ” + b[i]);// escreve b[0]:0, b[1]:5, b[2]:10 ,b[3]:15 ,b[4]:20 ENDEREÇO X
+        }
+        b = new int [5];//aloca mais 5 espaços ENDEREÇO Y
+        for (int i = 0; i < 5; i++){
+            b[i] = i; escrever(“b[” + i + “]: ” + b[i]);// b[0]:0, b[1]:1, b[2]:2 ,b[3]:3, b[4]:4, 
+        }
+    } 
+    public static void main(String[] args) {
+        int [] y = new int [5];// aloca 5 espaços
+        for (int i = 0; i < 5; i++){
+            y[i] = i; escrever(“y[” + i + “]: ” + y[i]); // escreve y[0]: 0, y[1]: 1,y[2]: 2,y[3]: 3,y[4]: 4
+        }
+        passagemDeArray(y);// passa o endereço da primeira posicao do vetor ENDEREÇO X
+        for (int i = 0; i < 5; i++){
+        escrever(“y[” + i + “]: ” + y[i]);// escreve b[0]:0, b[1]:5, b[2]:10 ,b[3]:15 ,b[4]:20
+} 
+} 
+}
