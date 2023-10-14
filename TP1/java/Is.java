@@ -1,3 +1,4 @@
+package java;
 
 public class Is {
     static boolean consoante(String str){
