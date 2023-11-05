@@ -1,121 +1,6 @@
 import java.io.*;
 import java.util.Scanner;
 
-public class CountingSort{
-    //Atributos estaticos relativos ao numero de comparaçoes e ao tempo de execução do algoritimo
-    static int numeroC;
-    static int numeroM;
-    static String tempoE;
-
-    public static Jogador[] sort(Jogador jogadores[], int n) {
-        // Encontre o jogador mais alto
-        Jogador maior = getMaior(jogadores, n);
-
-        // Array para contar o número de ocorrências de cada elemento
-        int[] count = new int[maior.getAltura() + 1];
-        Jogador[] ordenado = new Jogador[n];
-
-        // Inicializar cada posição do array de contagem
-        for (int i = 0; i < count.length; count[i] = 0, i++);
-
-        // Agora, o count[i] contém o número de elementos iguais a i
-        for (int i = 0; i < n; count[jogadores[i].getAltura()]++, i++);
-
-        // Agora, o count[i] contém o número de elementos menores ou iguais a i
-        for (int i = 1; i < count.length; count[i] += count[i - 1], i++);
-
-        // Ordenando
-        for (int i = n - 1; i >= 0; ordenado[count[jogadores[i].getAltura()] - 1] = jogadores[i],numeroM++, count[jogadores[i].getAltura()]--, i--);
-
-        // Copiando para o array original
-        for (int i = 0; i < n; jogadores[i] = ordenado[i],numeroM++, i++);
-        return ordenado;
-    }
-
-    public static Jogador getMaior(Jogador jogadores[], int n) {
-        Jogador maior = jogadores[0];
-
-        for (int i = 1; i < n; i++) {
-            numeroC++;
-            if (maior.getAltura() < jogadores[i].getAltura()) {
-                maior = jogadores[i];
-            } 
-        }
-        return maior;
-    }
-    //Método para impressão dos atributos de jogadores presentes no array 
-     public static void imprimiArray(Jogador jogadores[],int tam){
-        for(int i=0;i<tam;i++){
-              System.out.println("["+jogadores[i].getId()+" ## "+jogadores[i].getNome()+" ## "+jogadores[i].getAltura()+" ## "+jogadores[i].getPeso()+" ## "+jogadores[i].getAnoNascimento()+" ## "+jogadores[i].getUniversidade()+" ## "+jogadores[i].getCidadeNascimento()+" ## "+jogadores[i].getEstadoNascimento()+"]");
-        }
-    }
-     //Método para ordenar os jogadores por ordem alfabetica
-    public static Jogador[] selecao(Jogador jogadores[],int tam){
-        for(int i=0;i<tam-1;i++){
-            int menor=i;
-            for(int j=i+1;j<tam;j++){
-                if(jogadores[j].getNome().charAt(0)<jogadores[menor].getNome().charAt(0))menor=j;
-                else
-                {
-                    if(jogadores[j].getNome().charAt(0)==jogadores[menor].getNome().charAt(0)){
-                        int posChar=1;
-                        while(jogadores[j].getNome().charAt(posChar)==jogadores[menor].getNome().charAt(posChar)){
-                            posChar++;
-                        }
-                        if(jogadores[j].getNome().charAt(posChar)<jogadores[menor].getNome().charAt(posChar))menor=j;
-                    }
-                }
-            }
-            //Swap
-            Jogador aux=jogadores[i];
-            jogadores[i]=jogadores[menor];
-            jogadores[menor]=aux;
-        }
-        return jogadores;
-    }
-    //Método para criar um arquivo Log
-    public static void criaLog(){
-        try (FileWriter fileWriter = new FileWriter("808756_countingsort.txt")) {
-            fileWriter.write("808756\t"+numeroC+"\t"+numeroM+"\t"+tempoE+"\t");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-    
-    //Inicio da main
-    public static void main(String[] args) {
-        
-        double inicio=System.nanoTime();
-        Scanner scanner= new Scanner(System.in);
-        String id="";
-        Jogador jogadores[]=new Jogador[4000];
-        Jogador jogadoresSub[]=new Jogador[4000];
-        int c=0;
-        //Criaçao do subarray com os ids digitados
-        do{
-            id=scanner.next();
-            if(!id.equals("FIM")){
-                int identificador=Integer.parseInt(id);
-                jogadores=Jogador.ler();
-                jogadoresSub[c]=jogadores[identificador];
-                c++;
-            }            
-        }while(!id.equals("FIM"));
-       //Chamada do metodo para ordenaçao do subarray
-        Jogador jogadoresO1[]=new Jogador[4000];
-        Jogador jogadoresO2[]=new Jogador[4000];
-        jogadoresO1=selecao(jogadoresSub,c);
-        jogadoresO2=sort(jogadoresO1,c);
-        imprimiArray(jogadoresO2, c);
-        
-        //Calculo final do tempo e criaçao do log
-        double  fim=System.nanoTime();
-        double tempoExecucao=fim-inicio;
-        tempoE=Double.toString(tempoExecucao);
-        criaLog();
-        scanner.close();
-    }
-}
 class Jogador {
     private int id;
     private String nome;
@@ -236,10 +121,8 @@ class Jogador {
 
         try (BufferedReader leitor = new BufferedReader(new FileReader(nomeArquivo))) {
             String linha;//guarda o conteudo da linha lida 
-            while ((linha = leitor.readLine()) != null) {
-                
+            while ((linha = leitor.readLine()) != null) { 
                 if(qtJ>=0){//Apartir da 2 linha
-                    
                     jogadores[qtJ]=new Jogador();
                     Scanner sc= new Scanner(linha);
                     sc.useDelimiter(",");
@@ -266,16 +149,134 @@ class Jogador {
                     jogadores[qtJ].setEstadoNascimento(atributos[7]);
                     qtJ++;// incremento da quantidade de jogadores registrados
                     sc.close();
-                    
                 }
                 else qtJ++;
             }
-            
         } catch (IOException e) {
             e.printStackTrace();
         }
         return jogadores;
     }
-      
 }
 
+public class MergeSort{
+    //Atributos estaticos relativos ao numero de comparaçoes e ao tempo de execução do algoritimo
+    static int numeroC;
+    static int numeroM;
+    static String tempoE;
+
+    public static Jogador[] mergesort(int esq, int dir,Jogador jogadores[]) {
+        if (esq < dir){
+            int meio = (esq + dir) / 2;
+            mergesort(esq, meio, jogadores);
+            mergesort(meio + 1, dir, jogadores);
+            jogadores=intercalar(esq, meio, dir, jogadores);
+        }
+        return jogadores;
+    }
+
+    public static Jogador[] intercalar(int esq, int meio, int dir, Jogador[] jogadores) {
+        int i, j, k;
+        int n1 = meio - esq + 1;
+        int n2 = dir - meio;
+    
+        Jogador[] a1 = new Jogador[n1 + 1];
+        Jogador[] a2 = new Jogador[n2 + 1];
+
+        a1[n1] = new Jogador();
+        a1[n1].setUniversidade("{");
+        
+        a2[n2] = new Jogador();
+        a2[n2].setUniversidade("{");
+    
+        // Inicializar o primeiro subarray
+        for (i = 0; i < n1; i++) {
+            numeroM++;
+            a1[i] = new Jogador();
+            a1[i] = jogadores[esq + i];
+        }
+    
+        // Inicializar o segundo subarray
+        for (j = 0; j < n2; j++) {
+            numeroM++;
+            a2[j] = new Jogador();
+            a2[j] = jogadores[meio + j + 1];
+        }
+
+        // Intercalação propriamente dita
+        i = j = 0;
+        k = esq;
+        while (i < n1 && j < n2) {
+            numeroC++;
+            if (a1[i].getUniversidade().compareTo(a2[j].getUniversidade()) <= 0) {
+                numeroC++;
+                if (a1[i].getUniversidade().compareTo(a2[j].getUniversidade()) == 0){
+                    numeroC++;
+                    if(a1[i].getNome().compareTo(a2[j].getNome()) <= 0){
+                        jogadores[k] = a1[i];
+                        i++;
+                    } 
+                    else {
+                        jogadores[k] = a2[j];
+                        j++;
+                    }
+                } 
+                else{
+                    jogadores[k] = a1[i];
+                    i++;
+                }
+            } else {
+                jogadores[k] = a2[j];
+                j++;
+            }
+            k++;
+        }
+        return jogadores;
+    }
+
+    //Método para impressão dos atributos de jogadores presentes no array 
+    public static void imprimiArray(Jogador jogadores[],int tam){
+        for(int i=0;i<tam;i++){
+            System.out.println("["+jogadores[i].getId()+" ## "+jogadores[i].getNome()+" ## "+jogadores[i].getAltura()+" ## "+jogadores[i].getPeso()+" ## "+jogadores[i].getAnoNascimento()+" ## "+jogadores[i].getUniversidade()+" ## "+jogadores[i].getCidadeNascimento()+" ## "+jogadores[i].getEstadoNascimento()+"]");
+        }
+    }
+    
+    //Método para criar um arquivo Log
+    public static void criaLog(){
+        try (FileWriter fileWriter = new FileWriter("808756_mergesort.txt")) {
+            fileWriter.write("808756\t"+numeroC+"\t"+numeroM+"\t"+tempoE+"\t");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    //Inicio da main
+    public static void main(String[] args) {
+        double inicio=System.nanoTime();
+        Scanner scanner= new Scanner(System.in);
+        String id="";
+        Jogador jogadores[]=new Jogador[4000];
+        Jogador jogadoresSub[]=new Jogador[4000];
+        int c=0;
+        //Criaçao do subarray com os ids digitados
+        do{
+            id=scanner.next();
+            if(!id.equals("FIM")){
+                int identificador=Integer.parseInt(id);
+                jogadores=Jogador.ler();
+                jogadoresSub[c]=jogadores[identificador];
+                c++;
+            }            
+        }while(!id.equals("FIM"));
+        //Chamada do metodo para ordenaçao do subarray
+        jogadoresSub=mergesort(0,c-1,jogadores);
+        imprimiArray(jogadoresSub, c);
+        
+        //Calculo final do tempo e criaçao do log
+        double  fim=System.nanoTime();
+        double tempoExecucao=fim-inicio;
+        tempoE=Double.toString(tempoExecucao);
+        criaLog();
+        scanner.close();
+    }
+}

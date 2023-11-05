@@ -1,87 +1,86 @@
 import java.io.*;
 import java.util.Scanner;
 
-public class CountingSort{
+public class HeapSort{
     //Atributos estaticos relativos ao numero de comparaçoes e ao tempo de execução do algoritimo
     static int numeroC;
     static int numeroM;
     static String tempoE;
 
-    public static Jogador[] sort(Jogador jogadores[], int n) {
-        // Encontre o jogador mais alto
-        Jogador maior = getMaior(jogadores, n);
-
-        // Array para contar o número de ocorrências de cada elemento
-        int[] count = new int[maior.getAltura() + 1];
-        Jogador[] ordenado = new Jogador[n];
-
-        // Inicializar cada posição do array de contagem
-        for (int i = 0; i < count.length; count[i] = 0, i++);
-
-        // Agora, o count[i] contém o número de elementos iguais a i
-        for (int i = 0; i < n; count[jogadores[i].getAltura()]++, i++);
-
-        // Agora, o count[i] contém o número de elementos menores ou iguais a i
-        for (int i = 1; i < count.length; count[i] += count[i - 1], i++);
-
-        // Ordenando
-        for (int i = n - 1; i >= 0; ordenado[count[jogadores[i].getAltura()] - 1] = jogadores[i],numeroM++, count[jogadores[i].getAltura()]--, i--);
-
-        // Copiando para o array original
-        for (int i = 0; i < n; jogadores[i] = ordenado[i],numeroM++, i++);
-        return ordenado;
+    //Metodo quick sort para ordenar os jogadores
+    public static Jogador[] sort(Jogador jogadores[],int n) {
+       
+        for(int tam=2;tam<=n;tam++){
+            jogadores=construir(jogadores,tam);
+        }
+        int ultimaPos=n-1;
+        while(ultimaPos>0){
+            numeroM=numeroM+3;
+            Jogador aux=jogadores[ultimaPos];
+            jogadores[ultimaPos]=jogadores[0];
+            jogadores[0]=aux;
+            ultimaPos--;
+            jogadores=reconstruir(jogadores, ultimaPos);
+        }
+        return jogadores;
+    }
+    //Metodo para construir o heap
+    public static Jogador[] construir(Jogador jogadores[],int tam){
+        for(int i=tam-1;i>0&&(jogadores[i].getAltura()>jogadores[(i-1)/2].getAltura()||(jogadores[i].getAltura()==jogadores[(i-1)/2].getAltura()&&jogadores[i].getNome().compareTo(jogadores[(i-1)/2].getNome())>0));i=(i-1)/2){
+            numeroC=numeroC+2;
+            numeroM=numeroM+3;
+            Jogador aux=jogadores[i];
+            jogadores[i]=jogadores[(i-1)/2];
+            jogadores[(i-1)/2]=aux;
+        }
+        return jogadores;
+    }
+    //Metodo para reconstruir o heap ap[os a troca do indice 0 com o ultimo
+    public static Jogador[] reconstruir(Jogador jogadores[],int tam){
+    int i = 0;
+    while(2*i<tam){
+        int filho = getMaiorFilho(i, tam,jogadores);
+        numeroC=numeroC+2;
+        if(jogadores[i].getAltura()<jogadores[filho].getAltura()||(jogadores[i].getAltura()==jogadores[filho].getAltura()&&jogadores[i].getNome().compareTo(jogadores[filho].getNome())<0)){
+            numeroM=numeroM+3;
+            Jogador aux=jogadores[i];
+            jogadores[i]=jogadores[filho];
+            jogadores[filho]=aux;
+            i = filho;
+        }else{//os demais estao certos
+            i = tam;
+        }
+    }
+        return jogadores;
     }
 
-    public static Jogador getMaior(Jogador jogadores[], int n) {
-        Jogador maior = jogadores[0];
-
-        for (int i = 1; i < n; i++) {
-            numeroC++;
-            if (maior.getAltura() < jogadores[i].getAltura()) {
-                maior = jogadores[i];
-            } 
+    //Metodo para retornar o maior filho 
+    public static int getMaiorFilho(int i, int tamHeap,Jogador jogadores[]){
+        int filho;
+        numeroC=numeroC+2;
+        if (2*i+1 == tamHeap ||(jogadores[2*i+1].getAltura()>jogadores[2*i+2].getAltura()||(jogadores[2*i+1].getAltura()==jogadores[2*i+2].getAltura()&&jogadores[2*i+1].getNome().compareTo(jogadores[2*i+2].getNome())>0))){
+            filho = 2*i+1;
+        } else {
+            filho = 2*i + 2;
         }
-        return maior;
+        return filho;
+    }
+
+    //Método para criar um arquivo Log
+    public static void criaLog(){
+        try (FileWriter fileWriter = new FileWriter("808756_heapsort.txt")) {
+            fileWriter.write("808756\t"+numeroC+"\t"+numeroM+"\t"+tempoE+"\t");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
     //Método para impressão dos atributos de jogadores presentes no array 
      public static void imprimiArray(Jogador jogadores[],int tam){
         for(int i=0;i<tam;i++){
               System.out.println("["+jogadores[i].getId()+" ## "+jogadores[i].getNome()+" ## "+jogadores[i].getAltura()+" ## "+jogadores[i].getPeso()+" ## "+jogadores[i].getAnoNascimento()+" ## "+jogadores[i].getUniversidade()+" ## "+jogadores[i].getCidadeNascimento()+" ## "+jogadores[i].getEstadoNascimento()+"]");
         }
-    }
-     //Método para ordenar os jogadores por ordem alfabetica
-    public static Jogador[] selecao(Jogador jogadores[],int tam){
-        for(int i=0;i<tam-1;i++){
-            int menor=i;
-            for(int j=i+1;j<tam;j++){
-                if(jogadores[j].getNome().charAt(0)<jogadores[menor].getNome().charAt(0))menor=j;
-                else
-                {
-                    if(jogadores[j].getNome().charAt(0)==jogadores[menor].getNome().charAt(0)){
-                        int posChar=1;
-                        while(jogadores[j].getNome().charAt(posChar)==jogadores[menor].getNome().charAt(posChar)){
-                            posChar++;
-                        }
-                        if(jogadores[j].getNome().charAt(posChar)<jogadores[menor].getNome().charAt(posChar))menor=j;
-                    }
-                }
-            }
-            //Swap
-            Jogador aux=jogadores[i];
-            jogadores[i]=jogadores[menor];
-            jogadores[menor]=aux;
-        }
-        return jogadores;
-    }
-    //Método para criar um arquivo Log
-    public static void criaLog(){
-        try (FileWriter fileWriter = new FileWriter("808756_countingsort.txt")) {
-            fileWriter.write("808756\t"+numeroC+"\t"+numeroM+"\t"+tempoE+"\t");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
     
+    }
     //Inicio da main
     public static void main(String[] args) {
         
@@ -103,10 +102,8 @@ public class CountingSort{
         }while(!id.equals("FIM"));
        //Chamada do metodo para ordenaçao do subarray
         Jogador jogadoresO1[]=new Jogador[4000];
-        Jogador jogadoresO2[]=new Jogador[4000];
-        jogadoresO1=selecao(jogadoresSub,c);
-        jogadoresO2=sort(jogadoresO1,c);
-        imprimiArray(jogadoresO2, c);
+        jogadoresO1=sort(jogadoresSub,c);
+        imprimiArray(jogadoresO1, c);
         
         //Calculo final do tempo e criaçao do log
         double  fim=System.nanoTime();
@@ -227,7 +224,7 @@ class Jogador {
         resp.estadoNascimento=this.estadoNascimento;
         return resp;
     }
-    
+     
     // Método ler que funciona através da extração de dados pelo arquivo csv
     public static Jogador[] ler() {
         String nomeArquivo = "/tmp/players.csv";

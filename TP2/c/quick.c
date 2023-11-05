@@ -3,7 +3,7 @@
 #include <string.h>
 
 //Variaveis globais para definiçao do numero de comparacoes, movimentaçoes e do tempo de execucao do algoritimo
-int numeroC,numeroM;
+int numeroC,numeroM,loop;
 double tempoE;
 
 typedef struct Jogador{
@@ -19,9 +19,10 @@ typedef struct Jogador{
 
 //funcao para ordenar os jogadores pela ordem alfabetica do estado de nascimento
 void quicksortRec(Jogador jogadores[], int esq, int dir) {
+    loop++;
     int i = esq, j = dir;
     Jogador pivo = jogadores[(dir+esq)/2];
-    while (i <= j) {
+    while (i <= j){
         numeroC++;
         while (strcmp(jogadores[i].estadoNascimento,pivo.estadoNascimento)<=0){
             numeroC=numeroC+2;
@@ -53,7 +54,7 @@ void quicksortRec(Jogador jogadores[], int esq, int dir) {
     if (esq < j){
         quicksortRec(jogadores, esq, j);
     } 
-    if (i < dir)  quicksortRec(jogadores, i, dir);
+    if (i < dir&&i<10)  quicksortRec(jogadores, i, dir);
 }
 
 //metodo para dividir a string linha em substrings entre as virgulas

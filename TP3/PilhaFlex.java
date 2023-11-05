@@ -1,100 +1,8 @@
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.Scanner;
 
-//Classe Ordenaçao por Seleçao
-public class QuickP{
-    //Atributos estaticos relativos ao numero de comparaçoes e ao tempo de execução do algoritimo
-    static int numeroC=0;
-    static int numeroM=0;
-    static String tempoE;
-
-   //funcao para ordenar os 10 primeiros jogadores pela ordem alfabetica do estado de nascimento
-    static Jogador [] quicksortRec(Jogador jogadores[], int esq, int dir) {
-        int i = esq, j = dir;
-        Jogador pivo = jogadores[(dir+esq)/2];
-        while (i <= j) {
-            numeroC++;
-            while (jogadores[i].getEstadoNascimento().compareTo(pivo.getEstadoNascimento())<=0){
-                numeroC=numeroC+2;
-                if(jogadores[i].getEstadoNascimento().compareTo(pivo.getEstadoNascimento())==0){
-                    numeroC++;
-                    if(jogadores[i].getNome().compareTo(pivo.getNome())<0) i++;
-                    else break;
-                }
-                else i++;
-            }   
-            while (pivo.getEstadoNascimento().compareTo(jogadores[j].getEstadoNascimento())<=0){
-            numeroC=numeroC+2;
-                if (pivo.getEstadoNascimento().compareTo(jogadores[j].getEstadoNascimento())==0){
-                    numeroC++;
-                    if(pivo.getNome().compareTo(jogadores[j].getNome())<0) j--;
-                    else break;
-                }
-                else j--;
-            }
-            if (i <= j) {
-                numeroM++;
-                Jogador aux=jogadores[j];
-                jogadores[j]=jogadores[i];
-                jogadores[i]=aux;
-                i++;
-                j--;
-            }
-        }
-        if (esq < j){
-            quicksortRec(jogadores, esq, j);
-        } 
-        if (i < dir&&i<10) quicksortRec(jogadores, i, dir);
-        return jogadores;
-    }
-    
-    //Método para impressão dos atributos de jogadores presentes no array 
-    public static void imprimiArray(Jogador jogadores[],int tam){
-        for(int i=0;i<tam;i++){
-              System.out.println("["+jogadores[i].getId()+" ## "+jogadores[i].getNome()+" ## "+jogadores[i].getAltura()+" ## "+jogadores[i].getPeso()+" ## "+jogadores[i].getAnoNascimento()+" ## "+jogadores[i].getUniversidade()+" ## "+jogadores[i].getCidadeNascimento()+" ## "+jogadores[i].getEstadoNascimento()+"]");
-        }
-    }
-
-    //Método para criar um arquivo Log
-    public static void criaLog(){
-        try (FileWriter fileWriter = new FileWriter("808756_quicksortParcial.txt")) {
-            fileWriter.write("808756\t"+numeroC+"\t"+numeroM*3+"\t"+tempoE+"\t");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-    //Inicio da main
-    public static void main(String[] args) {
-        double inicio=System.nanoTime();
-        Scanner scanner= new Scanner(System.in);
-        String id;
-        Jogador jogadores[]=new Jogador[4000];
-        Jogador jogadoresSub[]=new Jogador[4000];
-        int c=0;
-        //Criaçao do subarray com os ids digitados
-        do{
-            id=scanner.nextLine();
-            if(!id.equals("FIM")){
-                int identificador=Integer.parseInt(id);
-                jogadores=Jogador.ler();
-                jogadoresSub[c]=jogadores[identificador];
-                c++;
-            }
-                        
-        }while(!id.equals("FIM"));
-       //Chamada do metodo para ordenaçao do subarray
-        Jogador jogadoresO[]=new Jogador[4000];
-        jogadoresO=quicksortRec(jogadoresSub,0,c-1);
-        imprimiArray(jogadoresO, 10);
-        
-        //Calculo final do tempo e criaçao do log
-        double fim=System.nanoTime();
-        double tempoExecucao=fim-inicio;
-        tempoE=Double.toString(tempoExecucao);
-        criaLog();
-        scanner.close();
-    }
-}
 class Jogador {
     private int id;
     private String nome;
@@ -104,7 +12,7 @@ class Jogador {
     private int anoNascimento;
     private String cidadeNascimento;
     private String estadoNascimento;
-    
+
     // Construtor vazio
     public Jogador() {
     }
@@ -206,17 +114,19 @@ class Jogador {
         resp.estadoNascimento=this.estadoNascimento;
         return resp;
     }
+
     // Método ler que funciona através da extração de dados pelo arquivo csv
     public static Jogador[] ler() {
-        String nomeArquivo = "/tmp/players.csv";
         Jogador jogadores[]=new Jogador[4000];
-        int qtJ=-1; //inicializado com -1 para que o loop while seja executado ignorando a primeira linha
+        int qtJ=-1; 
+        String nomeArquivo = "/tmp/players.csv";
+        //inicializado com -1 para que o loop while seja executado ignorando a primeira linh
         try (BufferedReader leitor = new BufferedReader(new FileReader(nomeArquivo))) {
             String linha;//guarda o conteudo da linha lida 
             while ((linha = leitor.readLine()) != null) {
                 
                 if(qtJ>=0){//Apartir da 2 linha
-
+                    
                     jogadores[qtJ]=new Jogador();
                     Scanner sc= new Scanner(linha);
                     sc.useDelimiter(",");
@@ -247,13 +157,107 @@ class Jogador {
                 }
                 else qtJ++;
             }
-            leitor.close();
+            
         } catch (IOException e) {
             e.printStackTrace();
         }
         return jogadores;
     }
-      
 }
+//Classe Celula
+class Celula{
+    public Celula prox;//APontador para uma outra Celula
+    public Jogador elemento;
+    public Celula(Jogador jogador){
+        prox=null;
+        this.elemento=jogador;
+    }
+    public Celula(){
+        prox=null;
+    }
+} 
+public class PilhaFlex{
+    private Celula topo;
+    public PilhaFlex(){
+        topo=null;
+    }
+    //Método para realizar a insercao de um jogador na pilha
+    public void inserir(Jogador jogador){
+        Celula aux=new Celula(jogador);
+        aux.prox=topo;
+        topo=aux;
+        aux=null;
+    }
+     //Método para calcular o numero de registros presentes na pilha 
+    public int tamanho(){
+        int c=0;
+        Celula i=topo;
+        while(i!=null){
+            c++;
+            i=i.prox;
+        }
+        return c;
+    }
+    public Jogador remover(){
+        Jogador aux=topo.elemento;
+        Celula x=topo;
+        topo=x.prox;
+        x=null;
+        return aux;
+    }
+    //metodo para imprimir o array final
+    public void imprime(Celula i,int j){
+        if(i==null){
+            return;
+        }
+        else{
+            imprime(i.prox,j-1);
+            System.out.println("["+j+"] ## "+i.elemento.getNome()+" ## "+i.elemento.getAltura()+" ## "+i.elemento.getPeso()+" ## "+i.elemento.getAnoNascimento()+" ## "+i.elemento.getUniversidade()+" ## "+i.elemento.getCidadeNascimento()+" ## "+i.elemento.getEstadoNascimento()+" ##");
+        }
+    }
+    public static void main(String[] args) {
+            
+        Scanner scanner= new Scanner(System.in);
+        String id="",comandos;
+        int nOperacoes,qtRemovidos=0;
+        PilhaFlex pilha=new PilhaFlex();
+        Jogador jogadores[]=new Jogador[4000];
+        Jogador removidos[]=new Jogador[100];
+        jogadores=Jogador.ler();// Leitura dos jogadores no csv
 
+        //Primeira parte de entradas
+        do{
+            id=scanner.next();
+            if(!id.equals("FIM")){
+                int identificador=Integer.parseInt(id);
+                pilha.inserir(jogadores[identificador]);
+            }            
+        }while(!id.equals("FIM"));
 
+        nOperacoes=scanner.nextInt();// numero de operacoes
+        scanner.nextLine();
+        for(int i=0;i<nOperacoes;i++){
+            comandos=scanner.nextLine();// leitura de cada operacao
+
+            //remocao
+            if(comandos.charAt(0)=='R'){
+                removidos[qtRemovidos]=pilha.remover();
+                qtRemovidos++;
+            }
+            //insercao
+            else if(comandos.charAt(0)=='I'){
+                String[] palavras = comandos.split(" ");
+                int identificador=Integer.parseInt(palavras[1]);
+                pilha.inserir(jogadores[identificador]);
+            }
+        }
+        //impressao dos removidos
+        for(int i=0;i<qtRemovidos;i++){
+            System.out.println("(R) "+removidos[i].getNome());
+        }
+        
+        pilha.imprime(pilha.topo,pilha.tamanho()-1);
+        scanner.close();
+    }
+    
+}
