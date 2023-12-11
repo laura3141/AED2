@@ -33,7 +33,7 @@ void quicksortRec(Jogador jogadores[], int esq, int dir) {
             }
             else i++;
         }   
-       while (strcmp(pivo.estadoNascimento,jogadores[j].estadoNascimento)<=0){
+        while (strcmp(pivo.estadoNascimento,jogadores[j].estadoNascimento)<=0){
         numeroC=numeroC+2;
             if (strcmp(pivo.estadoNascimento,jogadores[j].estadoNascimento)==0){
                 numeroC++;
